@@ -12,13 +12,16 @@
              ng-repeat="product in data.products | filter:categoryFilter | range:selectedPage:pageSize">
             <h3>
                 <strong>{{product.name}}</strong>
-                    <span class="pull-right label label-primary">
-                        {{product.price | currency}}
-                    </span>
-            </h3>
-                <span class="lead">
-                    {{product.description}}
+                <span class="pull-right label label-primary">
+                    {{product.price | currency}}
                 </span>
+            </h3>
+            <button ng-click="addProductToCart(product)" class="btn btn-success pull-right">
+                Add to cart
+            </button>
+            <span class="lead">
+                {{product.description}}
+            </span>
         </div>
         <div class="pull-right btn-group">
             <a class="btn btn-default"

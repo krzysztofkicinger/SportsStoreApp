@@ -29,6 +29,59 @@ Good solution is to enable visibility of some elements if error happens or not
 
 **ng-include directive** - import files (views) at runtime to the current view
 
+```js
+<ng-include src="'./views/productList.html'"></ng-include>
+```
+
+The name of the file is specified as literal value in single quotes. If it was not, then the directive would look for a scope property to get the name of the file.
+
+### Benefits of partial views
+ * Breaks the application into manageable chunks
+ * Creates fragments of HTML that can be used repeatedly in an application
+ * Different areas of functionality can be shown easier
+
+# Services
+
+AngularJS provides a lot of functionality through **services** (they are simply singleton objects that are accessible throughout an application.
+
+There are different ways of creating a service, one of them is Module.factory:
+
+```js
+angular.module("<moduleName>", [])
+    .factory("<serviceName>", function() {
+        return {
+            ... JavaScript Object ...
+        }
+    });
+```
+
+Passed arguments to factory(...) function:
+ * <serviceName>
+ * Factory Function - will be invoked when AngularJS needs the service, responsible for creating the service object, will be called **only once**
+
+# Directives
+
+**Directives* - self-contained, reusable units of functionality, directives allow you to write anything from simple helpers to complex features and to decide whether the result is rightly woven into the current application or completely reusable in other applications
+
+### Creating Directives
+
+```js
+angular.module("<moduleName>", [])
+    .directive("<directiveName>", function(cart) {
+        return {
+                ... JavaScript Object...
+            }
+        });
+```
+
+Factory Function:
+ * Returns a **Directive definition object**
+ * This object defines properties that tells AngularJS what directive does and how it does it
+  * restrict - how the directive can be applied (E - directive can be applied ONLY as element, EA - directive can be applied as an element or attribute)
+  * templateUrl - URL of partial view whose contents will be inserted into the directive's element
+  * controller - controller object
+
+
 # Common Errors:
 
 1. Problem - Unknown provider
