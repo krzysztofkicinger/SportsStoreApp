@@ -1,0 +1,230 @@
+# Using DeployD - Useful for simple data rest services
+
+Based on MongoDB.
+
+```
+dpd create <projectName>
+dpd -p <portNumber> <projectName>/app.dpd
+dashboard
+```
+
+```http
+<serverPath>:<portNumber>/dashboard
+```
+
+```http
+<serverPath>:<portNumber>/<collectionName>
+```
+
+# Building application from scratch
+
+### Add <script> and <link> elements
+
+```html
+    <link href="<pathToBootstrap>/bootstrap.css" rel="stylesheet" />
+    <link href="<pathToBootstrap>/bootstrap-theme.css" rel="stylesheet" />
+    <script src="<pathToAngular>/angular.js"></script>
+```
+
+### Create Modules
+
+**AngularJS Modules** - top-level building blocks in an AngularJS application.
+
+How to create them?
+```html
+<script>
+    var moduleVarName = angular.module("moduleName", []);
+</script>
+```
+
+### Connect HTML with AngularJS
+
+**ng-app directive** - makes the functionality defined within the module named "moduleName" available within the HTML. It cant be applied to any <html> tag to narrow down the scope (common practice is to apply it to <body> element only)
+```html
+<html ng-app="moduleName">
+```
+
+### Run application on Node.js Server
+TODO
+
+# Controllers
+
+**Controller** - defines a logic and data (model) required to support view on its scope
+
+**Top-Level Controller** - controller used throughout the application
+
+### Creating a Controller - Part 1 - Accessing Module object
+
+First of all we have to find appropriate AngularJS module:
+
+```html
+angular.module("angularModuleName")
+```
+
+**REMEMBER**: There is a huge difference between:
+
+```js
+angular.module("angularModuleName")
+```
+
+and
+
+```js
+angular.module("angularModuleName", [<dependencies>])
+```
+
+If the second parameter is specified (in example []) we are telling Angular to **create the module**. The array argument
+points to modules, that are required to provide functionality for particular module.
+
+On the other hand, if we do not specify second argument, the Angular Module will **not** be created, but located.
+
+**REMEMBER**: AngularJS will report an error in following situations:
+ * Module with the same name has been previously declared
+ * Module which is trying to be located, does not exist
+
+Both usages returns **Module object** that can be used to define application functionality.
+
+### Creating a Controller - Part 2 - Invocation of controller() function
+
+```js
+angular.module("<moduleName>")
+    .controller("<controllerName>", function($scope) { ... } )
+```
+
+**Note**: $scope argument is not required.
+
+### Applying Constructor functionality to HTML page
+
+1. Add <script> element that imports appropriate file (if functionality is defined within <script> tags this step can be omitted):
+
+```js
+<script src="<pathToConstructorFile>"></script>
+```
+
+2. Apply constructor to HTML tag (define scope):
+
+```js
+<body ng-controller="<constructorName>">
+```
+
+# Content Elements
+
+**ng-repeat directive** - generates elements for each object in an array of data, its value creates a local variable that is used for each data object in a specified array
+
+```html
+<div ... ng-repeat="<var> in <dataArray>">
+```
+
+**Binding expression** - denoted with the {{...}}
+
+# Filters
+
+### Filters usages
+ * data formatting
+ * ordering data values for display in a view
+
+AngularJS comes with build in filters, including:
+ * **currency** filter - formats numeric values as currency amounts
+ * **orderBy:'<propertyName>' - takes an argument that specifies which property the object will be sorted by
+ * **filter:<filterFunction>** - passed filter function takes as argument single element of collection or array and selects the subset of the objects
+ * **limitTo** - returns up to a specified number of items from an array
+
+### How to apply filter
+
+Usage: **|** followed by the name of the filter
+
+
+Example - tells AngularJS to pass the value of price property through currency filter:
+
+```js
+{{product.price | currency}}
+```
+
+```js
+{{product.price | filter:<filterFunction>}}
+
+<filterFunction>:
+    function(product) {
+        return product == null || product.category == selectedCategory;
+    }
+```
+
+### How to use $filter built-in service
+
+**$filter** - built-in service
+
+```js
+$filter("limitTo")(...)
+```
+
+### Custom filters
+
+Custom filters are created using the **filter** method defined by Module objects.
+
+```js
+<angularModule>.filter("<filterName>", function() {
+    return function(<arrayData>, <propertyName>) {
+        ...
+    }
+});
+```
+
+ * **<filterName>** - name of the filter (must be unique)
+ * **Factory Function** - returns a filter function that does the actual work, AngularJS calls it when it need to create an instance of the filter and it is invoked to perform the filtering
+
+### Filter function
+
+```js
+function(<arrayData>, <propertyName>) { ... }
+```
+
+ * <arrayData> - data filter is being asked to format
+ * <propertyName> - used to specify the object property that will be used to generate a list of unique values (not required)
+
+Filter function is responsible for returning the filtered data, even if it is the data it receives.
+
+How to apply filter defined as a function - example:
+
+```js
+angular.module("customFilters", [])
+    .filter("unique", function() {
+       return function(data, propertyName) {
+        ...
+       }
+    });
+```
+
+```html
+<a ng-repeat="item in data.products | orderBy:'category' | **unique:'category'**">...</a>
+```
+
+### Applying Filter Module as Dependency
+
+```js
+var moduleVarName = angular.module("<moduleName>", ["<customFilters>"]);
+```
+
+**Dependency Injection** - in AngularJS declaring and managing dependencies between modules and other kinds of components is central to AngularJS
+ * AngularJS loads all of the modules before using them
+ * You can declare module after it was used as dependency
+ * **REMEMBER**: Order of <script> is important when extending a module but not when defining a new one
+
+### Handling onClick Events
+
+```js
+<a ng-click="selectCategory()">...</a>
+```
+
+**ng-click directive** - provides a function that will be invoked in response to user clicking the button
+
+Action provided in ng-click attribute can be:
+ * static - doesn't take argument
+ * dynamic - takes argument
+
+# Controller scope inheritance
+
+Controller within a scope of another component can access data and behaviors the outer one defines. It allows us to limit the scope of controller functionality to the part of the application where it will be used.
+
+# Applying CSS class
+
+**ng-class directive** - applies a CSS class based on the AngularJS logic

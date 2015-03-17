@@ -1,0 +1,56 @@
+# Making AJAX requests
+
+**$http** - built-in service, defines methods for making different kinds of Ajax request
+
+### Types of method calls
+ * synchronous - execution doesn't move on to the next statement until the current one has been completed
+ * asynchronous - Ajax request is a regular HTTP request that happens asynchronously (in the background), AngularJS represents asynchronous operations using **promises**
+
+### $http.get
+
+Starts Ajax requests and execution of the application continues, even though the request has yet to be completed. Returns an object that defines:
+ * success(function(data) { ... })
+ * error(function(error) { ... })
+Passed functions to those methods takes arguments and AngulaJS promises to call one of them to tell me how the request turns out.
+
+**Note**: AngularJS provides automatic conversion that performs for JSON data.
+
+### Dealing with errors
+
+Good solution is to enable visibility of some elements if error happens or not
+ * **ng-show directive** - hides the element it applied to until the expression specified in the attribute value evaluates to true
+ * **ng-hide directive** - hides the element as long as the attribute value evaluates to true
+
+**Error object** passed by AngularJS to error(function (**error**) { ... }) defines properties:
+ * **status** - HTTP error code
+ * **property** - string that describes the problem
+
+# Partial Views
+
+**ng-include directive** - import files (views) at runtime to the current view
+
+# Common Errors:
+
+1. Problem - Unknown provider
+
+```
+Error: [$injector:unpr] Unknown provider: dataUrlProvider <- dataUrl <- sportsStoreController
+```
+
+Solution 1 - Check constant name and function parameter
+
+```js
+angular.module("sportsStoreApp")
+    .constant("dataURL", "http://localhost:5050/products")
+    .controller("sportsStoreController", function($scope, $http, dataUrl) {
+        ...
+    });
+```
+
+Problem here is caused by dataURL - dataUrl mismatch. You need to change **dataUrl** function parameter to **dataURL**.
+
+Solution 2 - Check whether module dependencies have been applied
+
+```js
+angular.module('myApp', ['myApp.directives', 'myApp.services']);
+```
