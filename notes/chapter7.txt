@@ -81,6 +81,66 @@ Factory Function:
   * templateUrl - URL of partial view whose contents will be inserted into the directive's element
   * controller - controller object
 
+# URL Navigation
+
+**URL Routing** - allows partial views to be displayed automatically based on the current URL
+
+### Defining URL Routes
+
+**Route** - mapping between specific URL and the view that should be displayed when browser navigates to that URL
+
+1. Add **angular-route.js** file as script to the main app page
+
+```html
+<script src="./frameworks/angular-1.3.14/angular-route.js"></script>
+```
+
+2. Add **ngRoute** module as dependency, to module which will be responsible for routing
+
+```js
+angular.module("<moduleName>", ["ngRoute", ...])
+```
+
+3. Define entries for routing inside the **config(..)** method:
+
+```js
+.config(function ($routeProvider) {
+    $routeProvider.when("<urlPath>", {
+        templateUrl : "<partialViewPath>"
+    });
+    $routeProvider.otherwise({
+        templateUrl : "<defaultPath>"
+    });
+});
+```
+
+Example:
+
+```js
+$routeProvider.when("/checkout", {
+    templateUrl : "./views/checkoutSummary.html"
+});
+```
+
+**config(..) method** - config method takes function as its argument, which is executed when the module is loaded but before the application is executed, providing opportunity for any one-off configuration tasks
+
+**$routeProvider** - provider object of **$route service** used to set up the URL routing in an application
+ * **when("<urlPath>", "<object>") - matches URL to the view
+ * **otherwise("<object>") - specifies the view that should be used when the URL doesn't match one of those
+
+### URL Routes
+
+URL routes are matched against the **path** section (**#<path>**)
+
+4. Add **<ng-view />** in the place where partial view should be displayed.
+
+**<ng-view /> directive** is used to tell AngularJS where to display partial views. It is defined in the **ngRoute**
+
+### Using URL Routing to navigate
+
+```js
+<a href="#/checkout" ..>Click here</a>
+```
 
 # Common Errors:
 

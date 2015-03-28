@@ -1,0 +1,75 @@
+# Top-level Controller vs View/Model
+
+If you do not specify the **ng-controller directive** for partial view, which is convenient when the view doesn't require any additional behaviors.
+
+# Binding types
+ * **two-way binding** (set up by **ng-model directive**, uses {{..}}), used on form elements to allow user to enter values that change the scope, rather than just displaying them, flow in both directions between the scope and the data binding
+ * **one-way binding** - display a value from the scope, can be expression, can be filtered, but it is **read-only**, the only direction that updates flow in is from the scope to the binding
+
+NOTE: You don't have to define object on its scope or the individual properties. AngularJS scopes are flexible and assumes that you want to define a property dynamically when it isn't already defined
+
+# Form Validation
+
+1. Add **<form> element**:
+
+    ```html
+       <form name="<formName>" novalidate>
+    ```
+
+    * First purpose: **Enables validation** - AngualarJS redefines some HTML elements with custom directives to enable special features
+    * Second purpose: **Disables browser's validation** - this is done through **novalidate attribute** (standard HTML5 feature), ensures than only AngularJS is checking the data that the user provides
+    * Third purpose: **Defining variables used to report errors** - this is done through **name** attribute
+
+2. Displaying Validation Feedback:
+
+    * First kind of feedback: Define CSS styles to take advantage of classes that AngularJS assigns valid/invalid elements
+        * **ng-valid** - elements that contains valid field values
+        * **ng-invalid** - elements that contains invalid field values
+        * Form elements are always in one of these classes - one of these styles is always applied
+
+            ```html
+              <style>
+                  .ng-invalid { background-color: lightpink; }
+                  .ng-valid { background-color: lightgreen; }
+                  span.error { color: red; font-weight: bold; }
+              </style>
+            ```
+
+    * Use scope variables to control the visibility of targeted feedback messages for specific elements
+
+        * This HTML element combines <formName> with <inputName> and creates object <formName>.<inputName> on the scope. This object defines $error property, which itself is object with properties.
+
+            ```html
+              <input name="street" ... />
+            ```
+
+        * Apply property value to **ng-show directive**.
+
+           ```html
+              <span class="error" ng-show="<formName>.<inputName>.$error.required">...</span>
+           ```
+
+3. Linking action to validity
+
+    * Use <formName>.$invalid object value - tells about overall state of the form and combine it with **ng-disabled directive**
+
+            ```html
+                <button ng-disabled="<formName>.$invalid" ... >
+            ```
+
+# HTTP POST Requests
+
+1. Use **$http.post(...)** method to make Ajax POST request to the specified URL.
+
+```js
+$http.post(orderURL, order)
+    .success(function(data) {
+        ...
+    })
+    .error(function(error) {
+        ...
+    })
+    .finally(function() {
+        ...
+    });
+```
